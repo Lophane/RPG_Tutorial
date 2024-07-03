@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class PrefabWeightsEditor : EditorWindow
 {
+
     private PrefabWeights prefabWeights;
     private int selectedTab = 0;
     private string[] tabNames;

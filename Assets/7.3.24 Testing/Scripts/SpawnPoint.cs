@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class SpawnPoint : MonoBehaviour
 {
+
     public static List<SpawnPoint> activeSpawnPoints = new List<SpawnPoint>();
     public bool isOccupied = false;
 

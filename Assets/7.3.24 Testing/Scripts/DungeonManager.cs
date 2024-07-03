@@ -5,6 +5,7 @@ using DungeonGeneration;
 
 public class DungeonManager : MonoBehaviour
 {
+
     public static DungeonManager Instance;
     public PrefabWeights prefabWeights;
     public DungeonStyle currentStyle;

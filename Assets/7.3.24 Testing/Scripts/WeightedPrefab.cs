@@ -11,6 +11,7 @@ namespace DungeonGeneration
     [System.Serializable]
     public class WeightedPrefab
     {
+
         public GameObject prefab;
         public float weight;
         public PrefabType type;

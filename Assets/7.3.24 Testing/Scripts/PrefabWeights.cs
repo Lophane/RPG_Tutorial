@@ -15,6 +15,7 @@ namespace DungeonGeneration
     public class PrefabWeights : ScriptableObject
     {
         public List<DungeonStylePrefabs> dungeonStyles = new List<DungeonStylePrefabs>();
+
     }
 
     [System.Serializable]
