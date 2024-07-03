@@ -23,5 +23,6 @@ namespace DungeonGeneration
     {
         public DungeonStyle style;
         public List<WeightedPrefab> prefabs = new List<WeightedPrefab>();
+        public GameObject closedDoorPrefab;
     }
 }

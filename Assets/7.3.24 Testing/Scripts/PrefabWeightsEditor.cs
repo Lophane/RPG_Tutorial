@@ -49,6 +49,8 @@ public class PrefabWeightsEditor : EditorWindow
     {
         EditorGUILayout.LabelField(stylePrefabs.style.ToString() + " Prefabs", EditorStyles.boldLabel);
 
+        stylePrefabs.closedDoorPrefab = (GameObject)EditorGUILayout.ObjectField("Closed Door Prefab", stylePrefabs.closedDoorPrefab, typeof(GameObject), false);
+
         DrawPrefabList(stylePrefabs.prefabs);
     }
 
