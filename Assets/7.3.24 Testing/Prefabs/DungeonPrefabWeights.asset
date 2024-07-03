@@ -15,7 +15,7 @@ MonoBehaviour:
   dungeonStyles:
   - style: 0
     prefabs:
-    - prefab: {fileID: 5613547107458669011, guid: a80515c779768024584dc5e95406d291, type: 3}
+    - prefab: {fileID: 8054435801599841217, guid: ffa23a0ecfb6dea47be3c7ad6f447484, type: 3}
       weight: 1
       type: 1
     - prefab: {fileID: 6087276057931046721, guid: d3f6431725010a84182f2a8dca84e448, type: 3}
