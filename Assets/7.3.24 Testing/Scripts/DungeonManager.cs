@@ -23,6 +23,11 @@ public class DungeonManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        StartDungeonGeneration();
+    }
+
     public void StartDungeonGeneration()
     {
         Debug.Log("Starting dungeon generation...");
@@ -34,6 +39,7 @@ public class DungeonManager : MonoBehaviour
         Debug.Log("SpawnRoomsCoroutine started.");
         while (SpawnPoint.activeSpawnPoints.Count > 0)
         {
+            Debug.Log($"Active spawn points count: {SpawnPoint.activeSpawnPoints.Count}");
             List<SpawnPoint> currentSpawnPoints = new List<SpawnPoint>(SpawnPoint.activeSpawnPoints);
 
             foreach (var spawnPoint in currentSpawnPoints)
@@ -55,21 +61,33 @@ public class DungeonManager : MonoBehaviour
     public void SpawnRoomOrHallway(SpawnPoint spawnPoint)
     {
         DungeonStylePrefabs stylePrefabs = GetStylePrefabs();
-        GameObject prefab = ChooseWeightedPrefab(stylePrefabs.prefabs, PrefabType.Room);
-        GameObject instance = Instantiate(prefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
+        bool spawnedSuccessfully = false;
 
-        if (CheckForCollision(instance))
+        for (int i = 0; i < 3; i++) // Try up to 3 times
         {
-            Debug.Log("Collision detected, destroying instance.");
-            Destroy(instance);
-            spawnPoint.isOccupied = false;
+            GameObject prefab = ChooseWeightedPrefab(stylePrefabs.prefabs, PrefabType.Room);
+            GameObject instance = Instantiate(prefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
+
+            if (CheckForCollision(instance))
+            {
+                Debug.Log($"Collision detected on attempt {i + 1}, destroying instance.");
+                Destroy(instance);
+            }
+            else
+            {
+                Debug.Log("Instance spawned successfully.");
+                spawnPoint.isOccupied = true;
+                var spawnPoints = instance.GetComponentsInChildren<SpawnPoint>();
+                StartCoroutine(CheckHallwayDeadEnd(spawnPoints, instance));
+                spawnedSuccessfully = true;
+                break;
+            }
         }
-        else
+
+        if (!spawnedSuccessfully)
         {
-            Debug.Log("Instance spawned successfully.");
-            spawnPoint.isOccupied = true;
-            var spawnPoints = instance.GetComponentsInChildren<SpawnPoint>();
-            StartCoroutine(CheckHallwayDeadEnd(spawnPoints, instance));
+            Debug.Log("Failed to spawn room after 3 attempts, spawning closed door.");
+            SpawnClosedDoor(spawnPoint);
         }
     }
 
@@ -79,7 +97,15 @@ public class DungeonManager : MonoBehaviour
         DungeonStylePrefabs stylePrefabs = GetStylePrefabs();
         GameObject closedDoorPrefab = stylePrefabs.closedDoorPrefab;  // Use the closed door prefab from the current style
         Instantiate(closedDoorPrefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
+        DeactivateSpawnPoint(spawnPoint);
+    }
+
+    private void DeactivateSpawnPoint(SpawnPoint spawnPoint)
+    {
         spawnPoint.isOccupied = true;
+        spawnPoint.gameObject.SetActive(false);
+        SpawnPoint.activeSpawnPoints.Remove(spawnPoint);
+        Debug.Log($"Deactivated spawn point at {spawnPoint.transform.position}");
     }
 
     private DungeonStylePrefabs GetStylePrefabs()
@@ -128,6 +154,7 @@ public class DungeonManager : MonoBehaviour
             {
                 if (hit.gameObject != instance)
                 {
+                    Debug.Log($"Collision detected with {hit.gameObject.name} at {hit.transform.position}");
                     return true;
                 }
             }
